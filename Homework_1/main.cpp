@@ -19,8 +19,11 @@ int add(int num1, int num2) {
 
 int main() {
 	using namespace std;
+	setlocale(LC_ALL, "Russian");
 	int num1, num2;
+	cout << "¬ведите первое число ";
 	cin >> num1;
+	cout << "¬ведите второе число ";
 	cin >> num2;
 	cout << add(num1, num2);
 	return 0;
