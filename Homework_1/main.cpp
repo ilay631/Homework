@@ -22,8 +22,22 @@ int negative(int num) {
 }
 
 
-int subtraction(int num1, int num2) {
+int subtract(int num1, int num2) {
 	return add(num1, negative(num2));
+}
+
+
+int multiply(int num1, int num2) {
+	int i = 0;
+	int res = 0;
+	while (num2) {
+		if (num2 & 1) {
+			res = add(res, num1 << i);
+		}
+		num2 >>= 1;
+		i = add(i, 1);
+	}
+	return res;
 }
 
 
@@ -35,6 +49,6 @@ int main() {
 	cin >> num1;
 	cout << "¬ведите второе число ";
 	cin >> num2;
-	cout << subtraction(num1, num2);
+	cout << multiply(num1, num2);
 	return 0;
 }
