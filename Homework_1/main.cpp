@@ -63,7 +63,6 @@ int multiply(int num1, int num2) {
 
 
 int divide(int num1, int num2) {
-	// ƒелитель не может быть 0
 	if (num2 == 0)
 		throw std::runtime_error("Divided can't be zero...");
 
@@ -85,7 +84,6 @@ int divide(int num1, int num2) {
 
 
 int mod(int num1, int num2) {
-	// ƒелитель не может быть 0
 	if (num2 == 0)
 		throw std::runtime_error("Divided can't be zero...");
 
@@ -105,6 +103,19 @@ int mod(int num1, int num2) {
 }
 
 
+int power(int num1, int num2) {
+	if (num2 < 0) {
+		throw std::runtime_error("The degree must be non-negative...");
+	}
+	int res = 1;
+	for (int i = 0; i < num2; i = add(i, 1)) {
+		res = multiply(res, num1);
+	}
+
+	return res;
+}
+
+
 int main() {
 	using namespace std;
 	setlocale(LC_ALL, "Russian");
@@ -113,6 +124,6 @@ int main() {
 	cin >> num1;
 	cout << "¬ведите второе число ";
 	cin >> num2;
-	cout << mod(num1, num2) << " = " << num1 % num2;
+	cout << power(num1, num2) << " = " << pow(num1, num2);
 	return 0;
 }
