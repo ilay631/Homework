@@ -84,6 +84,27 @@ int divide(int num1, int num2) {
 }
 
 
+int mod(int num1, int num2) {
+	// ƒелитель не может быть 0
+	if (num2 == 0)
+		throw std::runtime_error("Divided can't be zero...");
+
+	bool negative = isNegative(num1);
+	num1 = absolute(num1);
+	num2 = absolute(num2);
+
+	while (num1 >= num2) {
+		num1 = subtract(num1, num2);
+	}
+
+	int res = num1;
+	if (negative) {
+		res = negate(res);
+	}
+	return res;
+}
+
+
 int main() {
 	using namespace std;
 	setlocale(LC_ALL, "Russian");
@@ -92,6 +113,6 @@ int main() {
 	cin >> num1;
 	cout << "¬ведите второе число ";
 	cin >> num2;
-	cout << divide(num1, num2);
+	cout << mod(num1, num2) << " = " << num1 % num2;
 	return 0;
 }
