@@ -17,17 +17,34 @@ int add(int num1, int num2) {
 }
 
 
-int negative(int num) {
+int negate(int num) {
 	return (add(~num, 1));
 }
 
 
 int subtract(int num1, int num2) {
-	return add(num1, negative(num2));
+	return add(num1, negate(num2));
+}
+
+
+bool isNegative(int num) {
+	return num >> 31;
+}
+
+
+int absolute(int num) {
+	if (isNegative(num)) {
+		return negate(num);
+	}
+	return num;
 }
 
 
 int multiply(int num1, int num2) {
+	bool negative = isNegative(num1) ^ isNegative(num2);
+	num1 = absolute(num1);
+	num2 = absolute(num2);
+
 	int i = 0;
 	int res = 0;
 	while (num2) {
@@ -36,6 +53,10 @@ int multiply(int num1, int num2) {
 		}
 		num2 >>= 1;
 		i = add(i, 1);
+	}
+
+	if (negative) {
+		res = negate(res);
 	}
 	return res;
 }
