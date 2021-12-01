@@ -93,7 +93,8 @@ void createNewFile(fs::path _path, string name) {
 
 void deleteFile(fs::path _path, string name) {
 	_path /= name;
-	remove(_path.generic_string().c_str());
+	if (name != "")
+		remove(_path.generic_string().c_str());
 }
 
 
@@ -115,7 +116,6 @@ int main() {
 		getline(cin, raw_com);
 		string command = getCom(raw_com);
 		string name = getName(raw_com);
-		// Проверка на корректность команды
 
 		if (command == "q" || command == "quit")
 			isWorking = false;
