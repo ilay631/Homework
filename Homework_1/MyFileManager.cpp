@@ -1,117 +1,142 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <fstream>
 using namespace std;
+namespace fs = std::filesystem;
 
 
-struct Command {
-	string command;
-	string name;
-
-	Command() : command(""), name("") {}
-	Command(string _com) : command(_com), name("") {}
-};
-
-
-bool isCommandCorrect(string command) {
-
+string getCom(string raw_com) {
+	string com("");
+	for (int i = 0; i < raw_com.length(); i++) {
+		if (raw_com[i] == ' ')
+			break;
+		com += raw_com[i];
+	}
+	return com;
 }
 
 
-Command createCommand(string _com) {
-	Command newCommand = Command{};
-
-	return newCommand;
+string getName(string raw_com) {
+	string name("");
+	bool isSpace = false;
+	for (int i = 0; i < raw_com.length(); i++) {
+		if (raw_com[i] == ' ')
+			isSpace = true;
+		else if (isSpace)
+			name += raw_com[i];
+	}
+	return name;
 }
 
 
 void showHelp() {
-
+	cout << "h / help - information about commands" << endl;
+	cout << "q / quit - completion of work" << endl;
+	cout << "cd - change path" << endl;
+	cout << "dir - show all directories" << endl;
+	cout << "sf <name> - show all files" << endl;
+	cout << "crd <name> - create new directory" << endl;
+	cout << "dd <name> - delete specified directory" << endl;
+	cout << "cf <name> - create new file" << endl;
+	cout << "df <name> - delete specified file" << endl;
+	cout << "of <name> - show specified file" << endl;
+	cout << endl;
 }
 
 
-void changePath(string* path) {
-
+void changePath(fs::path *curPath, string newPath) {
+	if (fs::exists(newPath) && fs::is_directory(newPath))
+		*curPath = fs::path(newPath);
 }
 
 
-bool isPathCorrect(string path) {
-
+void showDirs(string _path) {
+	fs::directory_iterator begin(_path);
+	fs::directory_iterator end;
+	for (; begin != end; ++begin) {
+		if (begin->is_directory())
+			cout << begin->path() << endl;
+	}
+	cout << endl;
 }
 
 
-void showDirs(string path) {
-
+void showFiles(string _path) {
+	fs::directory_iterator begin(_path);
+	fs::directory_iterator end;
+	for (; begin != end; ++begin) {
+		if (begin->is_regular_file())
+			cout << begin->path() << endl;
+	}
+	cout << endl;
 }
 
 
-void showFiles(string path) {
-
+void createNewDir(fs::path _path, string name) {
+	if (name.find_first_of("/\\:*?\"<>|") == -1)
+		fs::create_directory(_path / name);
 }
 
 
-void createNewDir(string path, string name) {
-
+void deleteDir(fs::path _path, string name) {
+	fs::remove_all(_path / name);
 }
 
 
-void deleteDir(string path, string name) {
-
+void createNewFile(fs::path _path, string name) {
+	_path /= name;
+	ofstream out(_path.generic_string());
+	out.close();
 }
 
 
-void createNewFile(string path, string name) {
-
+void deleteFile(fs::path _path, string name) {
+	_path /= name;
+	remove(_path.generic_string().c_str());
 }
 
 
-void deleteFile(string path, string name) {
-
-}
-
-
-void openFile(string path, string name) {
-
+void openFile(fs::path _path, string name) {
+	_path /= name;
+	ifstream in(_path.generic_string());
+	if (in)
+		cout << in.rdbuf();
 }
 
 
 int main() {
-	string path;
-	cout << "Input path " << endl;
-	cin >> path;
-	// Проверка на корректность пути
+	fs::path curPath = fs::current_path();
 
 	bool isWorking = true;
 	string raw_com;
 	while (isWorking) {
-		cout << "Enter your command (for help enter h)" << endl;
-		cin >> raw_com;
-		if (isCommandCorrect(raw_com)) {
-			Command com = createCommand(raw_com);
-			string command = com.command;
-			// Проверка на корректность команды
+		cout << curPath.generic_string() << endl;
+		getline(cin, raw_com);
+		string command = getCom(raw_com);
+		string name = getName(raw_com);
+		// Проверка на корректность команды
 
-			if (command == "q" || command == "quit")
-				isWorking = false;
-			else if (command == "h" || command == "help")
-				showHelp();
-			else if (command == "cd" || command == "change directory")
-				changePath(&path);
-			else if (command == "dir" || command == "show directories")
-				showDirs(path);
-			else if (command == "sf" || command == "show files")
-				showFiles(path);
-			else if (command == "crd" || command == "create directory")
-				createNewDir(path, com.name);
-			else if (command == "dd" || command == "delete directory")
-				deleteDir(path, com.name);
-			else if (command == "cf" || command == "create file")
-				createNewFile(path, com.name);
-			else if (command == "df" || command == "delete file")
-				deleteFile(path, com.name);
-			else if (command == "of" || command == "open file")
-				openFile(path, com.name);
-		}
+		if (command == "q" || command == "quit")
+			isWorking = false;
+		else if (command == "h" || command == "help")
+			showHelp();
+		else if (command == "cd")
+			changePath(&curPath, name);
+		else if (command == "dir")
+			showDirs(curPath.generic_string());
+		else if (command == "sf")
+			showFiles(curPath.generic_string());
+		else if (command == "crd")
+			createNewDir(curPath, name);
+		else if (command == "dd")
+			deleteDir(curPath, name);
+		else if (command == "cf")
+			createNewFile(curPath, name);
+		else if (command == "df")
+			deleteFile(curPath, name);
+		else if (command == "of")
+			openFile(curPath, name);
 	}
 	
 	return 0;
