@@ -32,10 +32,10 @@ struct Node {
 	int get(string _key) {
 		if (key == _key)
 			return value;
-		if (left && _key < key)
-			return left->get(key);
-		if (right && _key > key)
-			return right->get(key);
+		else if (_key < key && left != nullptr)
+			return left->get(_key);
+		else if (right != nullptr && _key > key)
+			return right->get(_key);
 		return -1;
 	}
 
@@ -124,7 +124,8 @@ struct AssociativeArray {
 	}
 
 	int get(string _key) {
-		if (isEmpty()) return -1;
+		if (isEmpty()) 
+			return -1;
 		return start->get(_key);
 	}
 
@@ -167,10 +168,10 @@ AssociativeArray* createMap() {
 int main() {
 	AssociativeArray* m = createMap();
 	m->print();
-	m->insert("abc", 10);
+	m->insert("d", 10);
 	m->print();
-	cout << m->get("abc");
-	m->remove("abc");
+	cout << m->get("d");
+	m->remove("d");
 	m->print();
 
 	return 0;
