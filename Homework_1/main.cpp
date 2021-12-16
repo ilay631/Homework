@@ -39,7 +39,59 @@ struct Node {
 		return -1;
 	}
 
-	bool 
+	bool remove(string _key, Node* parent) {
+		if (key < _key)
+			return right != nullptr && right->remove(_key, this);
+		else if (key > _key)
+			return left != nullptr && left->remove(_key, this);
+
+		if (left == nullptr && right == nullptr) {
+			if (parent->key > key)
+				parent->left = nullptr;
+			else
+				parent->right = nullptr;
+			delete this;
+			return true;
+		}
+		else if (left == nullptr || right == nullptr) {
+			Node* child;
+			if (!left)
+				child = right;
+			else child = left;
+
+			if (parent->key > key)
+				parent->left = child;
+			else
+				parent->right = child;
+			delete this;
+			return true;
+		}
+		else {
+			if (right->left == nullptr) {
+				right->left = left;
+				if (parent->key > _key)
+					parent->left = right;
+				else
+					parent->right = right;
+				delete this;
+				return true;
+			}
+			else {
+				Node* curNode = right;
+				Node* curPar = this;
+				while (curNode->left) {
+					curPar = curNode;
+					curNode = curNode->left;
+				}
+				value = curNode->value;
+				key = curNode->key;
+				curNode->remove(curNode->key, curPar);
+				return true;
+			}
+		}
+		return false;
+	}
+
 };
 
 
