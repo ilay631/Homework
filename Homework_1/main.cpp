@@ -9,7 +9,7 @@ struct Node {
 	Node* left;
 	Node* right;
 
-	Node(string _key, int _val) : key(_key), value(_val) {}
+	Node(string _key, int _val) : key(_key), value(_val), left(nullptr), right(nullptr) {}
 
 	bool insert(string _key, int _value) {
 		if (key < _key) {
@@ -92,6 +92,11 @@ struct Node {
 		return false;
 	}
 
+	void print() {
+		cout << key << " " << value << endl;
+		if (left) left->print();
+		if (right) right->print();
+	}
 };
 
 
@@ -128,11 +133,45 @@ struct AssociativeArray {
 	}
 
 	bool remove(string _key) {
+		if (start->key == _key) {
+			// ”далить корень и полностью пересобрать дерево
+		}
+		else return !isEmpty() && start->remove(_key, nullptr);
+	}
 
+	void print() {
+		cout << endl;
+		if (!isEmpty()) {
+			start->print();
+		}
 	}
 };
 
 
+AssociativeArray* createMap() {
+	AssociativeArray* m = new AssociativeArray();
+	cout << "Input number of elements" << endl;
+	int l;
+	cin >> l;
+	cout << "Input elements (string key, int value)" << endl;
+	for (int i = 0; i < l; i++) {
+		string k;
+		int v;
+		cin >> k >> v;
+		m->insert(k, v);
+	}
+	return m;
+}
+
+
 int main() {
-	
+	AssociativeArray* m = createMap();
+	m->print();
+	m->insert("abc", 10);
+	m->print();
+	cout << m->get("abc");
+	m->remove("abc");
+	m->print();
+
+	return 0;
 }
